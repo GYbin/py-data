@@ -2,8 +2,48 @@
 #-*- coding: UTF-8 -*-
 
 import socket
+import re
+import os
+from datetime import datetime
 HOST = '' 
 PORT = 9898 
+
+def openfile(x):
+    print "打开的文件为:", x
+    of = open(x,'r')
+    of_text=of.read()
+   # print of_text
+    return of_text
+
+def webheadurl(x):
+    #print x
+    if x== "/":
+        headurl = "." + x + "inx.html"
+    else:
+        headurl = "."+x
+    return headurl
+
+def postdata(data):#提取POST中提交的信息
+    post_list = data.split('\n')
+    post_key = post_list[4][-20:-1]
+    pattern = r"Content-Disposition: form-data; name=([\s|\S]*?)"+post_key
+    match = re.findall(pattern,data)
+    data_name = match[0].decode('utf-8')
+    data_text = match[1].decode('utf-8')
+    print data_name
+    print data_text
+def webhead(x):# 判断报头协议，
+    headlist=x.split('\r\n')
+    headone=headlist[0].split()
+    if headone[0]=="GET":
+        return webheadurl(headone[1])
+    elif headone[0]=="POST":
+        print "接受到POST 信息"
+        postdata(x)
+    else:
+        print "提交错误"
+        return '-1'
+
 listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 #AF_INET（又称 PF_INET）是 IPv4 网络协议的套接字类型，AF_INET6 则是 IPv6 的
 #SOCK_STREAM   是有保障的（即能保证数据正确传送到对方）面向连接的SOCKET,是基于TCP的
@@ -19,12 +59,14 @@ while True:
     client_connection, client_address = listen_socket.accept()
     request = client_connection.recv(1024)
     print request
- 
-    http_response = """
-	HTTP/1.1 200 OK
- 
-	Hello, World!
-	"""
+    if request == 'e':
+        break
+    elif not request :
+        continue
+    htmlurl = webhead(request)
+    http_response = openfile(htmlurl)
     client_connection.sendall(http_response)
+    datatime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    print datatime
     client_connection.close()
 

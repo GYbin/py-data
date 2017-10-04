@@ -1,0 +1,28 @@
+HTTP/1.1 200 OK
+#Date: Sat, 31 Dec 2005 23:59:59 GMT
+Content-Type: text/html;charset=utf-8
+#Content-Length: 12200
+
+<html lang="zh-CN" xml:lang="zh-CN" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head>
+    <meta charset="UTF-8">
+    <title>简单记事本</title>
+</head>
+<body>
+        <form action="http://yabin.zgdgz.org:9898" method="post" enctype="multipart/form-data" id="usrform">
+         <!--   <p>文件名称：<input type="text" name="name" value="测试的" disabled="true"/>   <input type="submit" value="提交"></p>-->
+            <p>文件名称：<input type="text" name="name" value="测试的" />   <input type="submit" value="提交"></p>
+            <textarea cols="60" rows="10" name="text" form="usrform">此处输入文本  </textarea><br/>
+
+        </form>
+
+         <form action="http://yabin.zgdgz.org:9898" method="post" enctype="multipart/form-data" id="usrform1">
+         <!--   <p>文件名称：<input type="text" name="name" value="测试的" disabled="true"/>   <input type="submit" value="提交"></p>-->
+            <p>文件名称：<input type="text" name="name" value="测试的" />   <input type="submit" value="提交"></p>
+            <textarea cols="60" rows="10" name="text" form="usrform1">此处输入文本  </textarea><br/>
+
+        </form>
+
+</body>
+</html>
