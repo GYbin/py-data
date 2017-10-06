@@ -9,7 +9,6 @@ HOST = ''
 PORT = 9898 
 
 def openfile(x):
-    print "打开的文件为:", x
     of = open(x,'r')
     of_text=of.read()
    # print of_text
@@ -28,18 +27,19 @@ def postdata(data):#提取POST中提交的信息
     post_key = post_list[4][-20:-1]
     pattern = r"Content-Disposition: form-data; name=([\s|\S]*?)"+post_key
     match = re.findall(pattern,data)
+   # print match
     data_name = match[0].decode('utf-8')
     data_text = match[1].decode('utf-8')
-    print data_name
-    print data_text
+    textname = data_name.split('\r\n')
+    return  textname[2]
 def webhead(x):# 判断报头协议，
     headlist=x.split('\r\n')
     headone=headlist[0].split()
     if headone[0]=="GET":
         return webheadurl(headone[1])
     elif headone[0]=="POST":
-        print "接受到POST 信息"
         postdata(x)
+        return "./inx.html"
     else:
         print "提交错误"
         return '-1'
