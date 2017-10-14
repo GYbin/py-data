@@ -5,28 +5,18 @@ import socket
 import re
 import os
 from datetime import datetime
+import urldata
 HOST = '' 
 PORT = 9898 
-
-def openfile(x):#读取返回客户端的文件
-    of = open(x,'r')
-    of_text=of.read()
-   # print of_text
-    return of_text
-
-def webheadurl(x):
-    #print x
-    if x== "/":
-        headurl = "." + x + "inx.html"
-    else:
-        headurl = "."+x
-    return headurl
 
 def ifvale(data,if_data):#搜索列表中字符串，返回字符串位置
     num = 0
     num_list=[]
+    #print "#"*20
+    #print data
+    #print if_data
     for i in data :
-        if data[num].find(if_data[0]) > 0:
+        if data[num].find(if_data[0][2:]) > 0:
             num_list.append(str(num))
         num+=1
     return num_list
@@ -35,21 +25,23 @@ def postdata(data):#提取POST中提交的信息
     match = re.findall(pattern,data)
     data_tmp = data.split('\r\n')
     match_num = ifvale(data_tmp,match)
+    #print match_num
     data_list = data.split(data_tmp[int(match_num[1])])
     #data_name = data_list[1].decode('utf-8')
-    #data_text = data_list[2].decode('utf-8')
+    #:data_text = data_list[2].decode('utf-8')
     return  data_list[1],data_list[2]
 def webhead(x):# 判断报头协议，
     headlist=x.split('\r\n')
     headone=headlist[0].split()
     if headone[0]=="GET":
-        return webheadurl(headone[1])
+        #return webheadurl(headone[1])
+        return urldata.html_file()
     elif headone[0]=="POST":
         post_txt=postdata(x)
-        print post_txt
+     #   print post_txt
         print post_txt[0].decode('utf-8')
         print post_txt[1].decode('utf-8')
-        return "./inx.html"
+        return urldata.html_file()
     else:
         print "提交错误"
         return '-1'
@@ -74,7 +66,8 @@ while True:
     elif not request :
         continue
     htmlurl = webhead(request)
-    http_response = openfile(htmlurl)
+    #http_response = openfile(htmlurl)
+    http_response = htmlurl
     client_connection.sendall(http_response)
     datatime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print client_address,datatime
