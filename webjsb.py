@@ -8,7 +8,7 @@ from datetime import datetime
 HOST = '' 
 PORT = 9898 
 
-def openfile(x):
+def openfile(x):#读取返回客户端的文件
     of = open(x,'r')
     of_text=of.read()
    # print of_text
@@ -22,23 +22,33 @@ def webheadurl(x):
         headurl = "."+x
     return headurl
 
+def ifvale(data,if_data):#搜索列表中字符串，返回字符串位置
+    num = 0
+    num_list=[]
+    for i in data :
+        if data[num].find(if_data[0]) > 0:
+            num_list.append(str(num))
+        num+=1
+    return num_list
 def postdata(data):#提取POST中提交的信息
-    post_list = data.split('\n')
-    post_key = post_list[4][-20:-1]
-    pattern = r"Content-Disposition: form-data; name=([\s|\S]*?)"+post_key
+    pattern = r"Content-Type: multipart/form-data; boundary=([\s|\S]{38})"
     match = re.findall(pattern,data)
-   # print match
-    data_name = match[0].decode('utf-8')
-    data_text = match[1].decode('utf-8')
-    textname = data_name.split('\r\n')
-    return  textname[2]
+    data_tmp = data.split('\r\n')
+    match_num = ifvale(data_tmp,match)
+    data_list = data.split(data_tmp[int(match_num[1])])
+    #data_name = data_list[1].decode('utf-8')
+    #data_text = data_list[2].decode('utf-8')
+    return  data_list[1],data_list[2]
 def webhead(x):# 判断报头协议，
     headlist=x.split('\r\n')
     headone=headlist[0].split()
     if headone[0]=="GET":
         return webheadurl(headone[1])
     elif headone[0]=="POST":
-        postdata(x)
+        post_txt=postdata(x)
+        print post_txt
+        print post_txt[0].decode('utf-8')
+        print post_txt[1].decode('utf-8')
         return "./inx.html"
     else:
         print "提交错误"
@@ -67,6 +77,6 @@ while True:
     http_response = openfile(htmlurl)
     client_connection.sendall(http_response)
     datatime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    print datatime
+    print client_address,datatime
     client_connection.close()
 
