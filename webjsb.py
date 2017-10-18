@@ -35,13 +35,13 @@ def webhead(x):# 判断报头协议，
     headone=headlist[0].split()
     if headone[0]=="GET":
         #return webheadurl(headone[1])
-        return urldata.html_file()
+        return urldata.html_file(headone)
     elif headone[0]=="POST":
         post_txt=postdata(x)
      #   print post_txt
         print post_txt[0].decode('utf-8')
         print post_txt[1].decode('utf-8')
-        return urldata.html_file()
+        return urldata.html_file(headone)
     else:
         print "提交错误"
         return '-1'
@@ -68,6 +68,7 @@ while True:
     htmlurl = webhead(request)
     #http_response = openfile(htmlurl)
     http_response = htmlurl
+#    print http_response
     client_connection.sendall(http_response)
     datatime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     print client_address,datatime
