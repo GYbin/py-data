@@ -1,0 +1,9 @@
+LVM2增加大小：
+lvextend -L size lv
+size 参数可以是绝对数值，表示增加到多少，也可以是相对的，表示增加多少
+lvextend -l +4M /dev/zn/gen
+ext4： resize2fs lv size
+xfs： xfs_growfs /dev/mapper/centos-root
+不写size会自动调整系统分区容量
+XFS文件系统需要执行xfs_growfs /dev/mapper/vg_mysql0121366-LogVol01
+df  -B M 用M单位显示

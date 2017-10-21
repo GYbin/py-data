@@ -1,0 +1,6 @@
+lvm2减小大小
+e2fsck -f /dev/zn/gen
+resize2fs device size
+size 是绝对数值，是减小之后的数字。
+lvreduce -L size lv
++size 可以是相对增加多少，也可以是绝对到多少。

@@ -12,9 +12,6 @@ PORT = 9898
 def ifvale(data,if_data):#搜索列表中字符串，返回字符串位置
     num = 0
     num_list=[]
-    #print "#"*20
-    #print data
-    #print if_data
     for i in data :
         if data[num].find(if_data[0][2:]) > 0:
             num_list.append(str(num))
@@ -25,7 +22,6 @@ def postdata(data):#提取POST中提交的信息
     match = re.findall(pattern,data)
     data_tmp = data.split('\r\n')
     match_num = ifvale(data_tmp,match)
-    #print match_num
     data_list = data.split(data_tmp[int(match_num[1])])
     #data_name = data_list[1].decode('utf-8')
     #:data_text = data_list[2].decode('utf-8')
@@ -35,13 +31,12 @@ def webhead(x):# 判断报头协议，
     headone=headlist[0].split()
     if headone[0]=="GET":
         #return webheadurl(headone[1])
-        return urldata.html_file(headone)
+        return urldata.html_file(x)
     elif headone[0]=="POST":
         post_txt=postdata(x)
-     #   print post_txt
         print post_txt[0].decode('utf-8')
         print post_txt[1].decode('utf-8')
-        return urldata.html_file(headone)
+        return urldata.html_file(x)
     else:
         print "提交错误"
         return '-1'

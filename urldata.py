@@ -14,12 +14,11 @@ Content-Type:text/html; charset=utf-8
 """
     return htmltou
 
-def html_biaodan():
-    post_service = "http://yabin.zgdgz.org:9898"
+def html_biaodan(post_service = "yabin.zgdgz.org:9898"):
     post_id = "usrfrom"
     text_name = "煎蛋"
     text_data = "Text_Text"
-    bd="""    <form action="%s" method="post" enctype="multipart/form-data"id="%s">
+    bd="""    <form action="http://%s" method="post" enctype="multipart/form-data"id="%s">
         <p>FileName: <input type="text" name="name" value="%s"/> <input type="submit" value="Submit"></p>
         <textarea cols="60" rows="10" name="text" form="%s"> %s </textarea><br/>
     </form>
@@ -104,10 +103,25 @@ Content-Length: 122
 
 
 def html_file(x):
-    if x[1]== "/":
+    headlist=x.split('\r\n')
+    headone=headlist[0].split()
+    print headlist
+    if headone[1]== "/":
+        headadd =  headlist[5].split()
+        print headadd
         return html_ask()+html_tou()[0]+html_head()+html_body()+html_tou()[1]
     else:
         return favicon_ico()
 #print htmldata
-
+'''def html_post(x):
+    headlist=x.split('\r\n')
+    headone=headlist[0].split()
+    print headlist
+    if headone[1]== "/":
+        headadd =  headlist[7].split()
+        print headadd
+        return html_ask()+html_tou()[0]+html_head()+html_body(headadd[1])+html_tou()[1]
+    else:
+        return favicon_ico()
+'''
 
