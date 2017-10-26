@@ -6,11 +6,6 @@ import re
 import sys
 import os
 import time 
-#defaultencoding = 'gbk'
-#if sys.getdefaultencoding() != defaultencoding:
-#    reload(sys)
-#    sys.setdefaultencoding(defaultencoding)
-
 def get_time_stamp(): #获取毫秒级的时间
     ct = time.time()
     local_time = time.localtime(ct)
