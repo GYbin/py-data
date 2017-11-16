@@ -8,6 +8,7 @@ import ybpy_tool
 import re
 import time
 reload(sys)
+yhzzxq={}
 sys.setdefaultencoding('utf-8')
 ConfigFile = "yhzz16.cf"
 configList = ('username','passwd','service','geturl','getfile','head_Ref')
@@ -88,8 +89,8 @@ def get_laft_lanjz(get_html):
     zyjz_tmp = re.findall(pattern,get_html,re.S)
     for zyjz_tmpxx in zyjz_tmp:
         pattern = r'href="infos.php\?gid=(.*?)">(.*?)</a> \((.*?)\)<br>'
-        
-
+        zyjz_list = re.findall(pattern,zyjz_tmpxx) 
+        print zyjz_list[0][1],zyjz_list[0][2]
 
 
 def get_laft_langk(get_html):
@@ -104,7 +105,12 @@ def get_laft_langk(get_html):
     pattern = r'textContent\[5\].*?\[(.*?)\]'
     xqgk_tmpwz = re.findall(pattern,get_html)
     print '发现星球：'
+    global yhzzxq
+    numtmp = 0
     for xqgk_tmpzl in xqgk_tmp:
+        numtmp = numtmp+1
+        xqname = xq+str(numtmp)
+        yhzzxq[xqname]={'xqwz':xqgk_tmpzl[2],'xqname':xqgk_tmpzl[1],'xqline':xqgk_tmpzl[0]}
         print '位置:'+xqgk_tmpzl[2],'名称：'+xqgk_tmpzl[1],'链接：'+xqgk_tmpzl[0]
     print '当前星球位置：'+xqgk_tmpwz[0]
     print '当前星球大小:'+xqgk_tmpdq[0][0],'使用率'+xqgk_tmpdq[0][1],'最大空间'+xqgk_tmpdq[0][2]
