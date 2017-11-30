@@ -65,7 +65,7 @@ def laft_lan(html): #获取侧边栏选项地址
                 laft_url[laft_bskey]=lafturl_tmp[0]
     return laft_url
 
-def get_laft_lan(laft_data):
+def get_laft_lan(laft_data):#打开侧边栏地址，返回html页面
 #    if not isinstance(laft_url_dict,dict):
 #        print "传入写入参数需要使用Dict类型"
     time.sleep(2)
@@ -74,44 +74,71 @@ def get_laft_lan(laft_data):
     login_Ref = url_tmp
     html_txt = res.get(url_tmp,headers=headers('get'))
     html_txt.encoding = 'gbk'
-    if laft_data=='gk':
-        get_laft_langk(html_txt.text)
-    elif laft_data=='jz':
-        return html_txt.text
-        get_laft_lanjz(html_txt.text)
-    else:
-        return html_txt.text
+    return html_txt.text
+    #if laft_data=='gk':
+    #    get_laft_langk(html_txt.text)
+    #elif laft_data=='jz':
+    #    return html_txt.text
+    #    get_laft_lanjz(html_txt.text)
+    #else:
+    #    return html_txt.text
     #get_laft_langk(html_txt.text)
 
 
-def get_laft_lanjz(get_html):
-    pattern = r'<td class="l">(.*?)</font></a></td>'
+def get_laft_lanjz(get_html):#获取建筑信息
+    pattern = r'<td class="l">(.*?)ont></a></td>'
     zyjz_tmp = re.findall(pattern,get_html,re.S)
     for zyjz_tmpxx in zyjz_tmp:
         pattern = r'href="infos.php\?gid=(.*?)">(.*?)</a> \((.*?)\)<br>'
-        zyjz_list = re.findall(pattern,zyjz_tmpxx) 
+        zyjz_list = re.findall(pattern,zyjz_tmpxx)
+        if not zyjz_list:
+            continue
         print zyjz_list[0][1],zyjz_list[0][2]
+        pattern = r'<td class="k".*?href="(.*?)"><.*?>(.*?)</f' #升级链接
+        zyjz_sjljurl = re.findall(pattern,zyjz_tmpxx)
+        print '升级链接:'+zyjz_sjljurl[0][0]
+#        pattern = r'span.*?>(.*?)</span>.*?span.*?>(.*?)</span>'#需要多少资源
+        pattern = r'<br>.*?style=.*?>(.*?)</b>.*?style=.*?>(.*?)</b>'#剩余资源
+        zyjz_zysytmp = re.findall(pattern,zyjz_tmpxx)
+        if not ifziyuanfs(zyjz_zysytmp[0])==0:
+            print '资源不够'
+            continue
+        print '可以升级'
+def ifziyuanfs(tmp):#判断是否都是正数
+    for ifzy in tmp:
+        if not int(ifzy.strip().replace(',','')) >= 0:
+            return -1
+    return 0
 
 
-def get_laft_langk(get_html):
-    pattern = r'<div id="[metalx|crystalx|deuteriumx]*"[><font color="#ff0000"]*>(.*?)<[/font><]*/div></td>'
-    zy_tmp = re.findall(pattern,get_html)
-    pattern = r'<div id="deuteriumx".*?align="center" width="140"[><font color="#ff0000"]*>(.*?)<[/font><]*/td>.*?<font color="lime">(.*?)</font></td>'
-    nl_tmp = re.findall(pattern,get_html,re.S)
+def yhhs_confread_jz(): #读取建筑配置信息
+    ConfigFile = "yhzz16.cf"
+    configList = ('yhjz_jsm','yhjz_jtm','yhjz_zqm','yhjz_nlm')
+    yhzz_jm_zym = ybpy_tool.conf_read(configList,ConfigFile)
+    return yhzz_jm_zym
+
+def yhhs_fxxq(get_html):#发现星球
     pattern = r'<option [selected="selected" ]*value="(.*?)">(.*?)&nbsp;\[(.*?)\]&nbsp;&nbsp;</option>'
     xqgk_tmp = re.findall(pattern,get_html)
-    pattern = r'textContent\[1\].*?\\"#\\">(.*?)  \(<a.*?">(.*?)</a>.*?>(.*?)<'
-    xqgk_tmpdq = re.findall(pattern,get_html)
-    pattern = r'textContent\[5\].*?\[(.*?)\]'
-    xqgk_tmpwz = re.findall(pattern,get_html)
-    print '发现星球：'
     global yhzzxq
     numtmp = 0
+    print '发现星球：'
     for xqgk_tmpzl in xqgk_tmp:
         numtmp = numtmp+1
-        xqname = xq+str(numtmp)
+        xqname = 'xq'+str(numtmp)
         yhzzxq[xqname]={'xqwz':xqgk_tmpzl[2],'xqname':xqgk_tmpzl[1],'xqline':xqgk_tmpzl[0]}
         print '位置:'+xqgk_tmpzl[2],'名称：'+xqgk_tmpzl[1],'链接：'+xqgk_tmpzl[0]
+    return 0
+
+def get_laft_langk(get_html):#获取概况
+    pattern = r'<div id="[metalx|crystalx|deuteriumx]*"[><font color="#ff0000"]*>(.*?)<[/font><]*/div></td>'
+    zy_tmp = re.findall(pattern,get_html)#获取资源信息
+    pattern = r'<div id="deuteriumx".*?align="center" width="140"[><font color="#ff0000"]*>(.*?)<[/font><]*/td>.*?<font color="lime">(.*?)</font></td>'
+    nl_tmp = re.findall(pattern,get_html,re.S)#获取能量和暗物质
+    pattern = r'textContent\[1\].*?\\"#\\">(.*?)  \(<a.*?">(.*?)</a>.*?>(.*?)<'
+    xqgk_tmpdq = re.findall(pattern,get_html)#当前星球
+    pattern = r'textContent\[5\].*?\[(.*?)\]'
+    xqgk_tmpwz = re.findall(pattern,get_html)#获取星球位置信息
     print '当前星球位置：'+xqgk_tmpwz[0]
     print '当前星球大小:'+xqgk_tmpdq[0][0],'使用率'+xqgk_tmpdq[0][1],'最大空间'+xqgk_tmpdq[0][2]
     print "金属："+zy_tmp[0],"晶体："+zy_tmp[1],"重氢："+zy_tmp[2]
@@ -132,5 +159,6 @@ html_txt.encoding = 'gbk'
 html_data = html_txt.text
 laft_lan_url=laft_lan(html_data)
 tmp = get_laft_lan('gk')
+get_laft_langk(tmp)
 
 
