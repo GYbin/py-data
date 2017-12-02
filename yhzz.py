@@ -133,7 +133,7 @@ def yhhs_fxxq(get_html):#发现星球
         print '位置:'+xqgk_tmpzl[2],'名称：'+xqgk_tmpzl[1],'链接：'+xqgk_tmpzl[0]
     return 0
 
-def get_laft_langk(get_html):#获取概况
+def yhhs_xqgk(get_html):#获取概况
     pattern = r'<div id="[metalx|crystalx|deuteriumx]*"[><font color="#ff0000"]*>(.*?)<[/font><]*/div></td>'
     zy_tmp = re.findall(pattern,get_html)#获取资源信息
     pattern = r'<div id="deuteriumx".*?align="center" width="140"[><font color="#ff0000"]*>(.*?)<[/font><]*/td>.*?<font color="lime">(.*?)</font></td>'
@@ -150,6 +150,17 @@ def get_laft_langk(get_html):#获取概况
 
 postdata = {'v':'2','username':usercon['username'],'password':usercon['passwd'],'universe':usercon['service']}
 login_Purl = "http://u16.cicihappy.com/ogame/login.php"
+#tmp_a = 0
+#while tmp_a >= 2:
+#    tmp_a = tmp_a + 1
+#    html_data = res.post(login_Purl,data=postdata,headers=headers('post'))
+#    if not html_data.text.find('src="leftmenu.php"'):
+#        print "尝试登录失败，请查找原因。"
+#        time.sleep(2)
+#        if tmp_a >= 2
+#            exit()
+#    else :
+#        break
 html_data = res.post(login_Purl,data=postdata,headers=headers('post'))
 html_data.encoding = 'gbk'
 if not html_data.text.find('src="leftmenu.php"'):
@@ -157,11 +168,15 @@ if not html_data.text.find('src="leftmenu.php"'):
     exit()
 login_html=usercon['geturl']+usercon['getfile']
 login_Ref = login_html
-html_txt = res.get(login_html,headers=headers('get'))
+html_txt = res.get(login_html,headers=headers('get'))#开打游戏第一页
 html_txt.encoding = 'gbk'
 html_data = html_txt.text
-laft_lan_url=laft_lan(html_data)
-tmp = get_laft_lan(yhzzxq['laft_url']['gk'])
-get_laft_langk(tmp)
+laft_lan_url=laft_lan(html_data)#获取侧边栏。
+tmp = get_laft_lan(yhzzxq['laft_url']['gk'])#打开概况
+yhhs_fxxq(tmp)#获取发现星球列表
+yhhs_xqgk(tmp)#获取当前星球概况信息
+tmp = get_laft_lan(yhzzxq['laft_url']['jz'])#获取建筑界面
+get_laft_lanjz(tmp)#获取建筑信息
+
 
 
